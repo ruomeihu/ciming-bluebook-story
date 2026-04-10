@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta property="og:title" content="北京人正在变得更健康，还是我们只是看得更清楚了？">
+<meta property="og:description" content="114万人的体检报告 · 两个好消息和一个认知转折 — 慈铭北京蓝皮书">
+<meta property="og:type" content="article">
+<title>114万人的体检报告</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#002060;--blue:#0070C0;--green:#B3DA3E;--alert:#D4380D;--good:#059669;--female:#E07020;--text:#1A1A2E;--muted:#999}
+html,body{height:100%;overflow:hidden;touch-action:none;overscroll-behavior:none}
+body{font-family:-apple-system,'PingFang SC','Helvetica Neue','Microsoft YaHei',sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;background:#000}
+
+/* Page container */
+#book{position:relative;width:100%;height:100vh;overflow:hidden}
+.page{position:absolute;top:0;left:0;width:100%;height:100vh;display:flex;flex-direction:column;justify-content:center;padding:40px 28px;transition:transform .45s cubic-bezier(.4,0,.2,1),opacity .45s ease;will-change:transform,opacity;overflow:hidden}
+.page.current{transform:translateY(0);opacity:1;z-index:2}
+.page.above{transform:translateY(-100vh);opacity:0;z-index:1}
+.page.below{transform:translateY(100vh);opacity:0;z-index:1}
+
+/* Page indicator */
+#dots{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:6px}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .3s}
+.dot.active{background:#fff;height:18px;border-radius:3px}
+
+/* Page counter */
+#counter{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:100;font-size:11px;color:rgba(255,255,255,.35);letter-spacing:1px}
+
+/* ===== PAGE STYLES ===== */
+.pg-dark{background:linear-gradient(160deg,var(--navy),var(--blue));color:#fff}
+.pg-white{background:#FAFBFC;color:var(--text)}
+.pg-green{background:linear-gradient(160deg,#014D2E,var(--good));color:#fff}
+.pg-warm{background:linear-gradient(160deg,#7C2D12,var(--alert));color:#fff}
+.pg-end{background:linear-gradient(160deg,var(--navy),#013A7A);color:#fff}
+
+/* Typography */
+.pg-tag{font-size:11px;font-weight:700;letter-spacing:2px;opacity:.5;margin-bottom:12px}
+.pg-title{font-size:clamp(22px,6vw,30px);font-weight:900;line-height:1.3;margin-bottom:14px}
+.pg-sub{font-size:14px;line-height:1.65;opacity:.8;margin-bottom:20px}
+.pg-big{font-size:clamp(52px,14vw,72px);font-weight:900;line-height:1}
+.pg-big-label{font-size:14px;opacity:.7;margin-top:6px}
+
+/* Mini bar */
+.m-bar{margin:6px 0}.m-bar-l{font-size:12px;font-weight:600;display:flex;justify-content:space-between;margin-bottom:2px}
+.m-bar-t{height:20px;background:rgba(255,255,255,.12);border-radius:5px;overflow:hidden}
+.m-bar-f{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:6px;font-size:10px;font-weight:700;color:#fff}
+.m-bar-t-w{background:rgba(0,0,0,.06)}.m-bar-f-w{color:#fff}
+
+/* Trend row */
+.tr-row{display:flex;align-items:baseline;gap:6px;margin:5px 0}
+.tr-y{font-size:11px;opacity:.5;width:32px}.tr-v{font-size:19px;font-weight:900}.tr-c{font-size:11px;font-weight:700;margin-left:2px}
+
+/* Callout */
+.cb{padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.6;margin:12px 0}
+.cb-g{background:rgba(5,150,105,.12)}.cb-w{background:rgba(212,56,13,.1)}.cb-i{background:rgba(0,112,192,.12)}
+.cb strong{font-weight:700}
+
+/* Compare */
+.cmp-r{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:13px}
+.cmp-r:last-child{border:none}
+
+/* Pills */
+.pill{display:inline-block;padding:2px 8px;border-radius:14px;font-size:11px;font-weight:700;margin:2px}
+.pill-g{background:rgba(5,150,105,.15);color:var(--good)}.pill-w{background:rgba(212,56,13,.12);color:var(--alert)}.pill-i{background:rgba(0,112,192,.15);color:#fff}
+
+/* Ineq grid */
+.iq{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.iq-c{background:rgba(255,255,255,.08);border-radius:12px;padding:14px 10px;text-align:center}
+.iq-c .s{font-size:26px;font-weight:900}.iq-c .t{font-size:11px;font-weight:700;margin-bottom:3px}.iq-c .d{font-size:10px;opacity:.6;margin-top:3px}
+
+/* Persona */
+.ps{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.ps-c{background:rgba(255,255,255,.08);border-radius:10px;padding:12px 10px;text-align:center}
+.ps-c .a{font-size:20px;font-weight:900}.ps-c .t{font-size:11px;margin-top:3px;opacity:.8;line-height:1.4}
+
+/* Swipe hint */
+.swipe-hint{font-size:12px;opacity:.3;margin-top:20px;text-align:center;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.6}}
+
+/* Quote */
+.quote-text{font-size:clamp(20px,5.5vw,28px);font-weight:700;line-height:1.45;text-align:center;margin-bottom:16px}
+.quote-attr{font-size:10px;opacity:.4;text-align:center;line-height:1.8}
+</style>
+</head>
+<body>
+
+<div id="book">
+
+<!-- PAGE 1: Cover -->
+<div class="page pg-dark current" data-idx="0">
+  <div class="pg-tag">慈铭北京 · 蓝皮书数据叙事</div>
+  <div class="pg-title">北京人正在变得更健康，<br>还是我们只是看得更清楚了？</div>
+  <div class="pg-sub">114万人，三年数据。<br>两个好消息，一个认知转折，一份健康方向。</div>
+  <div class="swipe-hint">↑ 上滑翻页</div>
+</div>
+
+<!-- PAGE 2: Numbers -->
+<div class="page pg-white below" data-idx="1">
+  <div class="pg-tag" style="color:var(--muted)">第一幕 · 城市体检</div>
+  <div class="pg-big" style="color:var(--navy)">114万人</div>
+  <div class="pg-big-label" style="color:var(--muted)">2024年 · 19家体检中心<br>平均年龄 43.3岁 · 男性 51.9%</div>
+  <p style="margin-top:20px;font-size:14px;color:#666;line-height:1.6">80后最多（30.7%），其次90后（25.8%）。<br>他们是北京最活跃的劳动力。</p>
+</div>
+
+<!-- PAGE 3: TOP 5 -->
+<div class="page pg-dark below" data-idx="2">
+  <div class="pg-tag">第二幕 · 健康画像</div>
+  <div class="pg-title" style="font-size:20px">三个数字超过一半</div>
+  <div class="m-bar"><div class="m-bar-l"><span>肺结节</span><span style="color:var(--alert);font-weight:700">59.3%</span></div><div class="m-bar-t"><div class="m-bar-f" style="width:82%;background:var(--alert)"></div></div></div>
+  <div class="m-bar"><div class="m-bar-l"><span>超重/肥胖</span><span style="font-weight:700">56.4%</span></div><div class="m-bar-t"><div class="m-bar-f" style="width:78%;background:var(--blue)"></div></div></div>
+  <div class="m-bar"><div class="m-bar-l"><span>甲状腺结节</span><span style="font-weight:700">51.3%</span></div><div class="m-bar-t"><div class="m-bar-f" style="width:71%;background:#058EC6"></div></div></div>
+  <div class="m-bar"><div class="m-bar-l"><span>脂肪肝</span><span>42.7%</span></div><div class="m-bar-t"><div class="m-bar-f" style="width:59%;background:var(--female)"></div></div></div>
+  <div class="m-bar"><div class="m-bar-l"><span>中心性肥胖</span><span>37.9%</span></div><div class="m-bar-t"><div class="m-bar-f" style="width:52%;background:#888"></div></div></div>
+  <p style="font-size:12px;opacity:.5;margin-top:14px">但数字背后不全是坏消息——</p>
+</div>
+
+<!-- PAGE 4: Three trends -->
+<div class="page pg-white below" data-idx="3">
+  <div class="pg-tag" style="color:var(--muted)">第三幕 · 三年三种命运</div>
+  <div style="margin:10px 0">
+    <p style="font-size:15px;margin-bottom:8px"><span style="color:var(--alert);font-weight:900">↑ 飙升派</span></p>
+    <p style="font-size:13px;color:#555">肺结节 52.6%→69.9%（+17.3pp）<br>乳腺结节 26.3%→35.2%（+8.9pp）</p>
+  </div>
+  <div style="margin:10px 0">
+    <p style="font-size:15px;margin-bottom:8px"><span style="color:var(--good);font-weight:900">↓ 下降派</span></p>
+    <p style="font-size:13px;color:#555">高尿酸 21.8%→14.2%（-7.6pp）<br>幽门螺杆菌 19.4%→15.6%（-3.8pp）</p>
+  </div>
+  <div style="margin:10px 0">
+    <p style="font-size:15px;margin-bottom:8px"><span style="color:#999;font-weight:900">→ 不动派</span></p>
+    <p style="font-size:13px;color:#555">脂肪肝 ≈43%  ·  超重 ≈57%  ·  甲状腺结节 ≈52%</p>
+  </div>
+  <p style="font-size:13px;color:var(--muted);margin-top:14px;text-align:center">同一群人，为什么分化这么大？<br>先从好消息说起。</p>
+</div>
+
+<!-- PAGE 5: Good news 1 -->
+<div class="page pg-green below" data-idx="4">
+  <div class="pg-tag">好消息一</div>
+  <div class="pg-title">高尿酸的<br>两年退潮</div>
+  <div class="tr-row"><span class="tr-y">2023</span><span class="tr-v">21.8%</span></div>
+  <div class="tr-row"><span class="tr-y">2024</span><span class="tr-v" style="color:#A0FFD0">18.9%</span><span class="tr-c" style="color:#A0FFD0">↓2.9</span></div>
+  <div class="tr-row"><span class="tr-y">2025</span><span class="tr-v" style="color:#A0FFD0">14.2%</span><span class="tr-c" style="color:#A0FFD0">↓4.7</span></div>
+  <div class="cb cb-g" style="background:rgba(255,255,255,.12)">
+    <strong>三年跌幅 34.9%</strong>。男性从 37.0% 降到 25.4%。<br>少喝啤酒、少吃烧烤——身体给出了回应。
+  </div>
+</div>
+
+<!-- PAGE 6: Good news 1 but -->
+<div class="page pg-warm below" data-idx="5">
+  <div class="pg-tag">好消息一 · 但是</div>
+  <div class="pg-title" style="font-size:20px">年轻人仍是重灾区</div>
+  <div style="margin:16px 0">
+    <div class="pg-big" style="font-size:56px">37.0%</div>
+    <div class="pg-big-label">18-29岁男性高尿酸——比60岁老人还高</div>
+  </div>
+  <div style="margin:16px 0">
+    <div style="font-size:36px;font-weight:900">10.6 倍</div>
+    <div class="pg-big-label">性别差距：男 25.4% vs 女 2.4%</div>
+  </div>
+  <p style="font-size:13px;opacity:.7;margin-top:14px">外卖和啤酒的账单，还没有完全还清。</p>
+</div>
+
+<!-- PAGE 7: Good news 2 -->
+<div class="page pg-green below" data-idx="6">
+  <div class="pg-tag">好消息二</div>
+  <div class="pg-title">幽门螺杆菌的<br>静悄悄胜利</div>
+  <div class="tr-row"><span class="tr-y">2023</span><span class="tr-v">19.4%</span></div>
+  <div class="tr-row"><span class="tr-y">2024</span><span class="tr-v" style="color:#A0FFD0">17.2%</span><span class="tr-c" style="color:#A0FFD0">↓2.2</span></div>
+  <div class="tr-row"><span class="tr-y">2025</span><span class="tr-v" style="color:#A0FFD0">15.6%</span><span class="tr-c" style="color:#A0FFD0">↓1.6</span></div>
+  <div style="margin:14px 0">
+    <div class="cmp-r"><span>北京</span><span style="font-weight:700;color:#A0FFD0">15.6%</span></div>
+    <div class="cmp-r"><span>全国</span><span style="font-weight:700">25.0%</span></div>
+    <div class="cmp-r"><span>北京低于全国</span><span style="font-weight:700;color:#A0FFD0">37.6%</span></div>
+  </div>
+  <p style="font-size:13px;opacity:.75;margin-top:8px">分餐制、勤洗手、主动根治。<br>公共卫生最好的样子：安静地让感染退出生活。</p>
+</div>
+
+<!-- PAGE 8: Twist - Lung nodules -->
+<div class="page pg-dark below" data-idx="7">
+  <div class="pg-tag">第五幕 · 转折</div>
+  <div class="pg-title">你以为的恶化，<br><span style="color:var(--green)">可能是进步</span></div>
+  <div class="tr-row"><span class="tr-y">2023</span><span class="tr-v">52.6%</span></div>
+  <div class="tr-row"><span class="tr-y">2024</span><span class="tr-v">59.3%</span><span class="tr-c" style="color:var(--alert)">↑6.7</span></div>
+  <div class="tr-row"><span class="tr-y">2025</span><span class="tr-v" style="color:var(--alert)">69.9%</span><span class="tr-c" style="color:var(--alert)">↑10.6</span></div>
+  <div class="cb cb-i">
+    <strong>不是肺变差了，是眼睛变亮了。</strong><br>
+    低剂量CT普及 · AI辅助读片 · 质控趋严 · 公众筛查意识↑
+  </div>
+</div>
+
+<!-- PAGE 9: Nodules ≠ tumor -->
+<div class="page pg-white below" data-idx="8">
+  <div class="pg-tag" style="color:var(--muted)">第五幕 · 续</div>
+  <div class="pg-title" style="font-size:22px;color:var(--text)">结节 ≠ 肿瘤</div>
+  <div style="display:flex;gap:5px;flex-wrap:wrap;margin:12px 0">
+    <span class="pill pill-w" style="color:var(--alert)">肺结节 59.3%</span>
+    <span class="pill pill-i" style="background:rgba(0,112,192,.1);color:var(--blue)">甲状腺 51.3%</span>
+    <span class="pill pill-i" style="background:rgba(0,112,192,.1);color:var(--blue)">乳腺 30.4%</span>
+  </div>
+  <div style="margin:12px 0;font-size:14px">
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee"><span>甲状腺高危(4-5级)</span><span style="font-weight:700">仅 3.3%</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee"><span>乳腺高危(4-5级)</span><span style="font-weight:700">仅 2.2%</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0"><span>肺结节需干预</span><span style="font-weight:700">< 1%</span></div>
+  </div>
+  <div class="cb cb-w" style="background:#FFF4EC;color:#92400E">
+    查出结节<strong>不需要恐慌</strong>。<br>按医嘱定期随访即可。分级系统帮你区分"需关注"和"可放心"。
+  </div>
+</div>
+
+<!-- PAGE 10: Inequality -->
+<div class="page pg-dark below" data-idx="9">
+  <div class="pg-tag">第六幕 · 平均数下面</div>
+  <div class="pg-title" style="font-size:20px">藏在平均数下面的不平等</div>
+  <div class="iq">
+    <div class="iq-c"><div class="t" style="color:var(--alert)">50岁断崖</div><div class="s" style="color:var(--alert)">×2.5</div><div class="d">颈动脉斑块<br>14%→36%</div></div>
+    <div class="iq-c"><div class="t" style="color:var(--green)">性别鸿沟</div><div class="s" style="color:var(--green)">10.6倍</div><div class="d">高尿酸<br>男25% vs 女2%</div></div>
+    <div class="iq-c"><div class="t" style="color:var(--female)">年轻人危机</div><div class="s" style="color:var(--female)">72%</div><div class="d">30岁男性<br>超重率</div></div>
+    <div class="iq-c"><div class="t" style="color:#A0D0FF">女性骨骼</div><div class="s" style="color:#A0D0FF">4.4倍</div><div class="d">60岁+骨质疏松<br>女33% vs 男7.5%</div></div>
+  </div>
+</div>
+
+<!-- PAGE 11: Action -->
+<div class="page pg-dark below" data-idx="10">
+  <div class="pg-tag">第七幕 · 行动</div>
+  <div class="pg-title" style="font-size:20px">从数据到行动</div>
+  <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px">
+    <span class="pill pill-g">✅ 高尿酸在退潮</span>
+    <span class="pill pill-g">✅ 幽门螺杆菌在消退</span>
+    <span class="pill pill-i">ℹ️ 结节是技术进步</span>
+  </div>
+  <div class="ps">
+    <div class="ps-c"><div class="a">25岁</div><div class="t"><strong>查尿酸</strong><br>年轻≠安全</div></div>
+    <div class="ps-c"><div class="a" style="color:var(--female)">35岁</div><div class="t"><strong>查脂肪肝</strong><br>最后窗口</div></div>
+    <div class="ps-c"><div class="a" style="color:var(--alert)">50岁</div><div class="t"><strong>查颈动脉</strong><br>心血管断崖</div></div>
+    <div class="ps-c"><div class="a" style="color:var(--good);font-size:16px">结节</div><div class="t"><strong>别恐慌</strong><br>定期随访</div></div>
+  </div>
+</div>
+
+<!-- PAGE 12: Closing -->
+<div class="page pg-end below" data-idx="11">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center">
+    <div class="quote-text">「最好的体检，<br>不是检查身体，<br>而是检查认知。」</div>
+    <div class="quote-attr">
+      慈铭北京 · 健康体检大数据蓝皮书<br>
+      标化率根据第七次人口普查数据调整<br>
+      检出率 ≠ 患病率 · 体检人群<br><br>
+      慈铭体检 × 美年健康
+    </div>
+  </div>
+</div>
+
+</div><!-- #book -->
+
+<!-- Page dots -->
+<div id="dots"></div>
+<div id="counter"></div>
+
+<script>
+(function(){
+  const pages=document.querySelectorAll('.page');
+  const total=pages.length;
+  let cur=0, locked=false, startY=0;
+
+  // Build dots
+  const dotsEl=document.getElementById('dots');
+  const counterEl=document.getElementById('counter');
+  for(let i=0;i<total;i++){
+    const d=document.createElement('div');
+    d.className='dot'+(i===0?' active':'');
+    dotsEl.appendChild(d);
+  }
+  function updateDots(){
+    dotsEl.querySelectorAll('.dot').forEach((d,i)=>d.className='dot'+(i===cur?' active':''));
+    counterEl.textContent=(cur+1)+' / '+total;
+  }
+  updateDots();
+
+  // Audio context (synthesize page flip sound)
+  let audioCtx=null;
+  function initAudio(){
+    if(audioCtx) return;
+    try{
+      audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+      if(audioCtx.state==='suspended') audioCtx.resume();
+    }catch(e){}
+  }
+  function playFlip(){
+    if(!audioCtx) return;
+    try{
+      const dur=0.15;
+      const sr=audioCtx.sampleRate;
+      const buf=audioCtx.createBuffer(1,sr*dur,sr);
+      const data=buf.getChannelData(0);
+      for(let i=0;i<data.length;i++){
+        const t=i/sr;
+        const env=Math.exp(-t*30);
+        data[i]=(Math.random()*2-1)*env*0.3;
+      }
+      const src=audioCtx.createBufferSource();
+      src.buffer=buf;
+      const lp=audioCtx.createBiquadFilter();
+      lp.type='lowpass';lp.frequency.value=2000;
+      src.connect(lp);lp.connect(audioCtx.destination);
+      src.start();
+    }catch(e){}
+  }
+
+  function goTo(idx){
+    if(idx<0||idx>=total||idx===cur||locked) return;
+    locked=true;
+    initAudio();
+    playFlip();
+
+    const dir=idx>cur?1:-1;
+    pages[cur].className='page '+(pages[cur].dataset.bg||getPageBg(cur))+' '+(dir>0?'above':'below');
+    pages[idx].className='page '+(pages[idx].dataset.bg||getPageBg(idx))+' current';
+    cur=idx;
+    updateDots();
+    setTimeout(()=>{locked=false},460);
+  }
+  function getPageBg(i){return pages[i].className.replace(/page |current|above|below/g,'').trim()}
+
+  // Touch events
+  document.addEventListener('touchstart',function(e){
+    initAudio();
+    startY=e.touches[0].clientY;
+  },{passive:true});
+
+  document.addEventListener('touchend',function(e){
+    const dy=startY-e.changedTouches[0].clientY;
+    if(Math.abs(dy)>40){
+      if(dy>0) goTo(cur+1); // swipe up = next
+      else goTo(cur-1);     // swipe down = prev
+    }
+  },{passive:true});
+
+  // Keyboard (for desktop testing)
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowDown'||e.key===' ') goTo(cur+1);
+    if(e.key==='ArrowUp') goTo(cur-1);
+  });
+
+  // Mouse wheel (for desktop testing)
+  let wheelTimer=null;
+  document.addEventListener('wheel',function(e){
+    if(wheelTimer) return;
+    wheelTimer=setTimeout(()=>{wheelTimer=null},600);
+    if(e.deltaY>0) goTo(cur+1);
+    else if(e.deltaY<0) goTo(cur-1);
+  },{passive:true});
+})();
+</script>
+</body>
+</html>
